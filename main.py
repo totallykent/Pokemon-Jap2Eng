@@ -2,6 +2,7 @@ import tkinter as tk
 from tkinter import filedialog
 import subprocess
 import os
+import re
 import pokemonName
 
 def select_file():
@@ -31,10 +32,8 @@ def read_ssa_file(file_path):
         source_tuple = pokemonName.japanese_names
         replacement_tuple = pokemonName.english_names
 
-        for word in source_tuple:
-            if word in content:
-                index = source_tuple.index(word)
-                content = content.replace(word, replacement_tuple[index])
+        pattern = r'\b(' + '|'.join(map(re.escape, source_tuple)) + r')\b'
+        content = re.sub(pattern, lambda match: replacement_tuple[source_tuple.index(match.group())], content)
 
     with open(file_path, 'w', encoding="utf-8") as file:
         file.write(content)
